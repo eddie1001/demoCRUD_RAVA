@@ -1,12 +1,12 @@
 package com.angelramirez.demoCRUD.controllers;
 
-import com.angelramirez.demoCRUD.dto.ApiResponse;
 import com.angelramirez.demoCRUD.model.ClienteModel;
 import com.angelramirez.demoCRUD.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Configuration
 @RestController
@@ -16,49 +16,54 @@ public class ClienteController {
     ClienteService clienteService;
 
     @GetMapping
-    public ApiResponse getAllClientes () {
+    public ArrayList<ClienteModel> getAllClientes () {
         try {
-            return new ApiResponse(HttpStatus.OK.value(), "Lista de Clientes", clienteService.findAll());
+            return clienteService.findAll();
         } catch (Exception ex) {
-            return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al listar los clientes", false);
+            ex.printStackTrace();
+            return null;
         }
     }
 
     @GetMapping("{id}")
-    public ApiResponse getCliente (@PathVariable Long id){
+    public ClienteModel getCliente (@PathVariable Long id){
         try {
-            return new ApiResponse(HttpStatus.OK.value(), "Cliente Obtenido", clienteService.findById(id));
+            return clienteService.findById(id);
         } catch (Exception ex) {
-            return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al obtener cliente", false);
+            ex.printStackTrace();
+            return null;
         }
     }
 
     @PostMapping
-    public ApiResponse addCliente (@RequestBody ClienteModel client) {
+    public ClienteModel addCliente (@RequestBody ClienteModel client) {
         try {
-            return new ApiResponse(HttpStatus.OK.value(), "Cliente Agregado", clienteService.add(client));
+            return clienteService.add(client);
         } catch (Exception ex) {
-            return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al agregar Cliente", false);
+            ex.printStackTrace();
+            return null;
         }
     }
 
     @PutMapping("{id}")
-    public ApiResponse updateCliente (@PathVariable Long id, @RequestBody ClienteModel client){
+    public ClienteModel updateCliente (@PathVariable Long id, @RequestBody ClienteModel client){
         try {
-            return new ApiResponse(HttpStatus.OK.value(), "Cliente Actualizado", clienteService.update(id, client));
+            return clienteService.update(id, client);
         } catch (Exception ex) {
-            return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al actualizar Cliente", false);
+            ex.printStackTrace();
+            return null;
         }
     }
 
 
     @DeleteMapping("{id}")
-    public ApiResponse deleteCliente (@PathVariable Long id){
+    public String deleteCliente (@PathVariable Long id){
         try {
             clienteService.delete(id);
-            return new ApiResponse(HttpStatus.OK.value(), "Cliente Eliminado", true);
+            return "Cliente Eliminado";
         } catch (Exception ex) {
-            return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error al eliminar Cliente", false);
+            ex.printStackTrace();
+            return null;
         }
     }
 
